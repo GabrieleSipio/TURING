@@ -18,6 +18,7 @@ Queste due interfacce sono poi implementate, rispettivamente, nelle classi Regis
 -	WorkSpace
 # STRUTTURE DATI:
 Data:
+
 Questa classe di supporto serve ad esprimere le caratteristiche che l’entità utente deve avere all’interno di TURING. In particolare, il server gestisce una ConcurrentHashMap<String,Data> recuperata da dei file locali; quest’ultima contiene una associazione univoca tra l’username di un utente e i suoi dati personali (Data). La classe, infatti, contiene i seguenti dati:
 -	passwd: una stringa che contiene la password associata all’username 
 -	inEditing: una stringa che viene utilizzata per sapere quale documento l’utente sta editando, viene inizializzata con il token “noDoc”, il quale indica che l’utente non è impegnato nell’operazione di editing di alcun documento
@@ -33,6 +34,7 @@ La classe implementa poi i seguenti metodi:
 -	String getInEditing(): restituisce il valore della variabile inEditing che sarà o il nome del documento su cui l'utente sta effettuando l'editing, nel caso questa azione stia venendo effettuata, oppure il flag "noDoc” che indica che l'utente non sta lavorando all'editing di nessuna sezione
 -	void setInEditing(String inEditing): metodo usato per settare il parametro inEditing sul documento che si sta editando o al flag "noDoc" in caso l'operazione di editing sia cessata
 Docs:
+  
 Questa classe viene usata per esprimere le caratteristiche che un documento possiede all’interno di TURING, viene usata dal server tramite una ConcurrentHashMap <String,Docs> che è una struttura che mantiene traccia di tutti i documenti presenti in TURING e mantiene un’associazione univoca tra il nome del documento e le sue proprietà. In particolare, queste ultime sono:
 -	docName: una stringa contenente il nome del documento
 -	address: una stringa contenente l’indirizzo multicast associato al documento
@@ -49,11 +51,13 @@ Questa classe viene usata per esprimere le caratteristiche che un documento poss
 -	void addMessage(String user,String sect,String message): metodo usato per aggiungere un messaggio al buffer dei messaggi del documento
 -	ArrayList<ChatterBox> getChatBuffer(): metodo usato per ottenere la chat dei messaggi scambiati fino alla chiamata di questo metodo, in caso ci siano
 ChatterBox:
+  
 Questa classe viene usata per esprimere le caratteristiche che un messaggio inviato ad un gruppo di editors in TUIRING deve avere. In particolare, tramite dei getters, permette di sapere oltre al messaggio ricevuto, chi è il mittente e su quale sezione quest’ultimo sta lavorando.
 Parameters:
 Questa classe viene usata per mandare i parametri di I/O dal client al server, tramite i getters, è possibile ottenere il tipo di operazione che si sta richiedendo con i parametri ad essa associati
 Classi per la gestione delle operazioni di I/O:
 Register:
+
 Questa classe, usando le API RMI, ha il compito di gestire l’operazione di registrazione al sistema di TURING e di fornire delle strutture dati necessarie per le operazioni. Oltre questo ha il compito di andare a prendere, non appena il costruttore viene chiamato, le informazioni relative agli utenti e ai documenti presenti nel sistema dai due file (Databate.txt per gli utenti e Documents.txt per i documenti) deserializzandole e assegnandole a due ConcurrentHashMap rispettivamente <String,Data> per gli utenti e di <String,Docs> per i documenti, la prima mantiene un’associazione tra l’username dell’utente e i suoi dati personali, mentre la seconda mantiene un’associazione tra il nome dei documenti e l’entità che rappresenta il documento con tutte le sue proprietà. Se questi due file sono vuoti o non sono comunque presenti, il programma procede ad inizializzare come vuote le due ConcurrentHashMap e ,in caso i file non siano presenti, li crea e procede all’esecuzione.  La classe implementa, altresì, i seguenti metodi:
 -	ConcurrentHashMap<String, Data> getDB(): metodo usato per restituire la struttura che contiene informazioni relative agli utenti
 -	ConcurrentHashMap<String, Docs> getDocs(): metodo usato per restituire la struttura che contiene informazioni relative ai documenti presenti nel sistema
@@ -66,6 +70,7 @@ Questa classe, usando le API RMI, ha il compito di gestire l’operazione di reg
 -	String isEdited(String docName,int sez) throws RemoteException: metodo ereditato dall’interfaccia IRegister, ha il compito individuare, dato il nome di un documento e il numero di una sezione, se quest’ultima risulta in editing o meno, in caso positivo restituirà un token che verrà mostrato in fase di visualizzazione del documento, altrimenti restituirà una stringa vuota
 -	boolean isEditing(String name) throws RemoteException: metodo ereditato dall’interfaccia IRegister, ha il compito, dato il nome di un utente, di comunicare se quest’ultimo è coinvolto in un operazione di editing o meno 
 TURINGCore:
+  
 Questa classe gestisce le operazioni principali di I/O in TURING, mantiene, al suo interno, un set degli utenti online in TURING con un ConcurrentHashMap<String,SocketAddress> che mantiene l’associazione tra l’user è il suo indirizzo IP ogni volta che si autentica in TURING. Interagisce con il database degli utenti e dei documenti presenti nel sistema per effettuare le operazioni di I/O. La classe implementa i seguenti metodi:
 o	int login(String name, String password, SocketAddress IP): metodo utilizzato per effettuare l’autenticazione dell’utente di nome “name” e con password “password”. Se l’utente passa i controlli lo aggiungo all’online set con il suo IP
 o	void logout(String name) throws RemoteException: metodo per effettuare il logout dell'utente con nome "name" aggiornando il database con tutte le modifiche che l'utente ha fatto durante la sessione (portandolo in uno stato consistente) e rimuovendo l’utente dall’online set
@@ -85,4 +90,5 @@ L’interfaccia grafica di TURING è implementata usando Java Swing e consiste d
 PrincipalFrame:
 Definisce il frame di autenticazione al programma di TURING. Permette di eseguire le operazioni di Login e di Registrazione al servizio di TURING
 WorkSpace:
+
 Definisce l’hub di lavoro per TURING. Al suo interno è possibile eseguire tutte le operazioni di I/O quali creazione di un documento, editing di una sezione di un documento, invitare un utente a collaborare all’editing di un documento, visione di un documento o di una sezione specifica e logout dal servizio di TURING.
