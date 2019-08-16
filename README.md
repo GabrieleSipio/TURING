@@ -55,7 +55,8 @@ ChatterBox:
 Questa classe viene usata per esprimere le caratteristiche che un messaggio inviato ad un gruppo di editors in TUIRING deve avere. In particolare, tramite dei getters, permette di sapere oltre al messaggio ricevuto, chi è il mittente e su quale sezione quest’ultimo sta lavorando.
 Parameters:
 Questa classe viene usata per mandare i parametri di I/O dal client al server, tramite i getters, è possibile ottenere il tipo di operazione che si sta richiedendo con i parametri ad essa associati
-Classi per la gestione delle operazioni di I/O:
+# Classi per la gestione delle operazioni di I/O:
+
 Register:
 
 Questa classe, usando le API RMI, ha il compito di gestire l’operazione di registrazione al sistema di TURING e di fornire delle strutture dati necessarie per le operazioni. Oltre questo ha il compito di andare a prendere, non appena il costruttore viene chiamato, le informazioni relative agli utenti e ai documenti presenti nel sistema dai due file (Databate.txt per gli utenti e Documents.txt per i documenti) deserializzandole e assegnandole a due ConcurrentHashMap rispettivamente <String,Data> per gli utenti e di <String,Docs> per i documenti, la prima mantiene un’associazione tra l’username dell’utente e i suoi dati personali, mentre la seconda mantiene un’associazione tra il nome dei documenti e l’entità che rappresenta il documento con tutte le sue proprietà. Se questi due file sono vuoti o non sono comunque presenti, il programma procede ad inizializzare come vuote le due ConcurrentHashMap e ,in caso i file non siano presenti, li crea e procede all’esecuzione.  La classe implementa, altresì, i seguenti metodi:
