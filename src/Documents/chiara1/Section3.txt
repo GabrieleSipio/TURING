@@ -1,0 +1,38 @@
+NTFS
+L'NTFS è il file system che è nato con le versioni più recenti di Windows, il quale è stato pensato in maniera piuttosto flessibile. In particolare, nell'NTFS tutto quanto gira intorno ad un'unica tabella: la Master File Table, che è la tabella che dice tutto del file system, contiene tutte le informazioni che sono all'interno di questa tabella. Gioca un po' il ruolo della FAT oppure il ruolo della i-List, ma in realtà fa molto di più, perché nella MFT ci stanno molte più informazioni, molti più metadati sull'intero file system. 
+La cosa notevole è che l'MFT stessa è un file, per cui essa stessa è descritta all'interno della MFT. Per sapere dove sta la MFT nel disco, bisogna leggere la MFT. Siccome è un file lo si può allocare dovunque (a differenza di FAT o FFS che hanno posizioni standard: blocco 2 e 3).
+C’è bisogno però di un modo per tenere traccia di quali sono i suoi blocchi e questi sono descritti nella MFT. Quindi in realtà per avere un accesso al file system bisogna trovare prima la MFT: ma come? L'indice del primo blocco dell'MFT è conservato nel Master Boot Record, per cui da lì è possibile trovare la MFT e iniziando a leggere il primo blocco di essa, si possono trovare poi le informazioni per ricostruire il resto della MFT.
+L'altro elemento introdotto da NTFS sono gli Extent (superblocchi), che permettono di rappresentare blocchi di un file allocati in modo contiguo in modo molto efficiente, andando a memorizzare il primo blocco e la lunghezza della Extent. In questo modo un file di dimensioni enormi potrebbe, se contiguo, essere rappresentato soltanto con due informazioni: blocco iniziale e lunghezza. Questo è il massimo dell'efficienza alla quale si può aspirare. Se invece il file è molto frammentato bisognerà memorizzare molte più informazioni per poterlo rappresentare.
+NTFS utilizza delle tecniche di journaling (introdotte anche in Linux nelle ultime versioni): ogniqualvolta si fa una modifica al file system, questa modifica viene memorizzata in un file di log (il journal). Viene fatto questo perché spesso le modifiche del file system da fare sono diverse e tutte assieme rendono il file system coerente. Quando un file viene cancellato, bisogna andare ad eliminare il suo i-Node e
+marcare i blocchi del file come liberi e quindi bisogna fare tante modifiche al file system, ogni volta che viene fatta una modifica anche piccola alle directory, ai file e via discorrendo. Se mentre vengono fatte queste modifiche intervenisse un crash e il sistema collassasse il file system rimarrebbe inconsistente. Quando le strutture dati vengono riavviate, non daranno più informazioni coerenti. L’idea è che se interviene un crash nel frattempo, andando a vedere il journal si può ricostruire esattamente lo stato dell'ultima operazione e annullarla oppure completarla. Quindi anche in seguito ad un crash si può ripristinare il file system in una maniera coerente e quindi il sistema diventa più robusto.
+
+La MFT concretamente è un file, ma logicamente è una tabella di record: ogni record è lungo 1 kbyte e ogni
+record descrive un file, quindi ogni record della MFT è l'equivalente di un i-Node: contiene metadati del file e posizione nel disco. 
+MFT è un file perché  i primi due record della MFT descrivono la MFT stessa e se si vuole sapere dove essa si trova bisogna leggere il blocco 0 della MFT e lì c'è scritto quali sono i blocchi che compongono tutto il resto della tabella stessa. Siccome questa informazione è critica (se per caso questo blocco viene danneggiato o viene distrutto per errore non possiamo accedere alla tabella) è duplicata nei primi due record. Ogni record occupa 1 kbyte, tipicamente la dimensione di un settore è 256, 512 byte e questo vuol dire che se anche un settore venisse danneggiato comunque la copia della MFT resta valida.
+
+Chiaramente se un settore del record 0 della MFT è danneggiato la prima cosa da fare è allocare un altro blocco iniziale per la MFT, andarci a ricopiare le informazioni e a questo punto ripristinare tutto quanto. In questo modo è tollerante ai guasti. Dopodiché, i primi 16 record nell'MFT sono utilizzati per
+conservare metadati sul file system, per esempio: quali sono i blocchi liberi e quali occupati e questa informazione viene memorizzata come una bitmap, una tabella dove ogni bit indica se il blocco omologo è libero o occupato.
+In Unix questa bitmap è allocata staticamente subito dopo l'i-List, in NTFS è conservata in un file.
+
+Ogni record contiene metadati e dati: in realtà contiene anche il nome del file all'interno del MFT record.
+Nel record MFT quindi ci sono: il nome del file, i suoi attributi e poi, se è molto piccolo, il contenuto del
+file, se è un po' più grande ci sono i puntatori ai blocchi che compongono il file. Fintanto che
+questo file ha dimensioni che stanno nell'MFT record, lui è memorizzato là dentro. Se invece il file, ad un
+certo punto, inizia ad avere più informazioni di quante possono essere contenute nell'MFT record allora a
+questo punto almeno il suo contenuto viene estratto dall’MFT record e scritto in un blocco del disco e il MFT record ne contiene i puntatori. In pratica gli MFT record si possono estendere con altri MFT record, in questo modo posso andare a rappresentare file di dimensione arbitraria.
+
+Named Data in a File System
+
+Quando si fa accesso ad un file, l'utente normalmente specifica il nome di un file e una directory
+dove questo si trova. Tutte le volte che il SO materialmente deve andare ad accedere ad un file conosce
+sempre una directory e il nome del file. Ogni accesso al file, che sia un eseguibile o un file di dati, viene fatto sempre a partire dalla directory. Il file system legge la directory di riferimento, ne scorre il contenuto, cerca il nome del file associato al nome del file nella directory, trova un puntatore e a questo punto sposta l'attenzione del disco sull'i-Node, va dal disco a leggere l'i-Node, lo estrae, scorre la struttura, trova i puntatori ai blocchi ed è poi in grado, da questi, di leggere il contenuto effettivo del file. Se siamo in Windows, in NTFS non cambia molto: nuovamente si specifica il nome di una directory e il nome del file,
+il sistema operativo dal nome della directory risale all'MFT record della directory, legge l'MFT
+record della directory, trova i vari puntatori agli MFT record dei vari file in essa contenuti, li legge e
+controlla quali di questi corrisponde al nome del file che sta cercando. Una volta che l'ha trovato legge
+tutto l'MFT record associato a questo file, trova i puntatori ai blocchi del file, rappresentati sotto forma di
+Run e accede al file. Quindi è importante sapere come sono strutturate le directory per poter fare tutto
+questo, perché se non sappiamo come sono strutturate non possiamo trovare i file.
+
+Directories
+
+In realtà le directory sono file e sono memorizzate nel file system come gli altri file, quindi per trovare una directory bisogna leggere la directory madre o padre. Una volta trovata la directory e letto il contenuto esso è memorizzato sotto forma di Nome associato a puntatore all'i-Node e poi un puntatore all'elemento successivo (normalmente hanno questa struttura). 
