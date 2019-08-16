@@ -1,7 +1,7 @@
 # TURING
 Reti di Calcolatori progetto a.a. 2018/2019: disTribUted collaboRative edItiNG (TURING)
 
-Distributed collaborative editing (TURING) è un progetto che si pone l’obbiettivo di implementare una scrittura collaborativa, ovvero un tipo di scrittura che consiste nella creazione di testi da parte di un gruppo di persone, dove ognuno fornisce un contributo individuale alla produzione del documento finale.
+Distributed collaborative editing (TURING) è un progetto che si pone l’obbiettivo di implementare una scrittura collaborativa, ovvero un tipo di scrittura che consiste nella creazione di testi da parte di un gruppo di persone, dove ognuno fornisce un contributo individuale alla produzione del documento finale.\n
 Overview:
 Per ottenere questo obbiettivo si è scelto di implementare un sistema client-server che utilizza le API Java NIO in cui la concorrenza è gestita completamente con i Monitor. In particolare, il server ha al suo interno un selettore che gestisce i vari canali (i diversi client) connessi con il server. Viene utilizzata una SocketChannel per leggere da questi canali implementando il protocollo TCP. Come strutture dati per implementare le applicazioni vengono usate le classi:
 -	Data
