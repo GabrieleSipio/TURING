@@ -4,7 +4,7 @@ Reti di Calcolatori progetto a.a. 2018/2019: disTribUted collaboRative edItiNG (
 Distributed collaborative editing (TURING) è un progetto che si pone l’obbiettivo di implementare una scrittura collaborativa, ovvero un tipo di scrittura che consiste nella creazione di testi da parte di un gruppo di persone, dove ognuno fornisce un contributo individuale alla produzione del documento finale.
 
 
-Overview:
+# OVERVIEW:
 Per ottenere questo obbiettivo si è scelto di implementare un sistema client-server che utilizza le API Java NIO in cui la concorrenza è gestita completamente con i Monitor. In particolare, il server ha al suo interno un selettore che gestisce i vari canali (i diversi client) connessi con il server. Viene utilizzata una SocketChannel per leggere da questi canali implementando il protocollo TCP. Come strutture dati per implementare le applicazioni vengono usate le classi:
 -	Data
 -	Docs
@@ -16,7 +16,7 @@ L’applicazione, altresì, implementa due interfacce:
 Queste due interfacce sono poi implementate, rispettivamente, nelle classi Register e TURINGCore. L’interfaccia grafica del programma è stata implementata tramite Java Swing, in particolare sono state definite le classi:
 -	PrincipalFrame
 -	WorkSpace
-Strutture Dati:
+# STRUTTURE DATI:
 Data:
 Questa classe di supporto serve ad esprimere le caratteristiche che l’entità utente deve avere all’interno di TURING. In particolare, il server gestisce una ConcurrentHashMap<String,Data> recuperata da dei file locali; quest’ultima contiene una associazione univoca tra l’username di un utente e i suoi dati personali (Data). La classe, infatti, contiene i seguenti dati:
 -	passwd: una stringa che contiene la password associata all’username 
