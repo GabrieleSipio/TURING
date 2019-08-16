@@ -70,6 +70,7 @@ Questa classe, usando le API RMI, ha il compito di gestire l’operazione di reg
 -	InetAddress getDocAddress(String docName) throws RemoteException, UnknownHostException: metodo ereditato dall’interfaccia IRegister, ha il compito di restituire dato il nome di un documento, l’indirizzo multicast associato a quest’ultimo
 -	String isEdited(String docName,int sez) throws RemoteException: metodo ereditato dall’interfaccia IRegister, ha il compito individuare, dato il nome di un documento e il numero di una sezione, se quest’ultima risulta in editing o meno, in caso positivo restituirà un token che verrà mostrato in fase di visualizzazione del documento, altrimenti restituirà una stringa vuota
 -	boolean isEditing(String name) throws RemoteException: metodo ereditato dall’interfaccia IRegister, ha il compito, dato il nome di un utente, di comunicare se quest’ultimo è coinvolto in un operazione di editing o meno 
+  
 TURINGCore:
   
 Questa classe gestisce le operazioni principali di I/O in TURING, mantiene, al suo interno, un set degli utenti online in TURING con un ConcurrentHashMap<String,SocketAddress> che mantiene l’associazione tra l’user è il suo indirizzo IP ogni volta che si autentica in TURING. Interagisce con il database degli utenti e dei documenti presenti nel sistema per effettuare le operazioni di I/O. La classe implementa i seguenti metodi:
